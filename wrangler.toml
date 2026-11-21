@@ -10,7 +10,7 @@ run_worker_first = ["/api/*"]
 [[d1_databases]]
 binding = "DB"
 database_name = "nexchat-db"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "17d5f449-5a2a-423d-8961-4a4024bee9a3"
 migrations_dir = "migrations"
 
 [vars]
