@@ -133,11 +133,17 @@ async function handle(req,env){
   if(p==="/api/conversations" && method==="POST") return json({error:"Gunakan endpoint direct atau group."},400);
   return json({error:"Endpoint tidak ditemukan."},404);
 }
+
 export default {
  async fetch(req,env){
   const url=new URL(req.url);
   if(url.pathname.startsWith("/api/")){
-   try{return await handle(req,env)}catch(e){return json({error:"Terjadi kesalahan server."},500)}
+   try {
+    return await handle(req,env);
+   } catch(e) {
+    console.error("NEXCHAT_SERVER_ERROR:", e?.stack || e);
+    return json({error:"Terjadi kesalahan server."},500);
+   }
   }
   return env.ASSETS.fetch(req);
  }
