@@ -134,17 +134,32 @@ async function handle(req,env){
   return json({error:"Endpoint tidak ditemukan."},404);
 }
 
+
 export default {
- async fetch(req,env){
-  const url=new URL(req.url);
-  if(url.pathname.startsWith("/api/")){
-   try {
-    return await handle(req,env);
-   } catch(e) {
-    console.error("NEXCHAT_SERVER_ERROR:", e?.stack || e);
-    return json({error:"Terjadi kesalahan server."},500);
-   }
+  async fetch(req, env) {
+    const url = new URL(req.url);
+
+    // Paksa halaman utama membuka index.html
+    if (url.pathname === "/") {
+      url.pathname = "/index.html";
+      return env.ASSETS.fetch(
+        new Request(url, req)
+      );
+    }
+
+    // API tetap menggunakan backend yang sudah ada
+    if (url.pathname.startsWith("/api/")) {
+      try {
+        return await handle(req, env);
+      } catch (e) {
+        console.error("NEXCHAT_SERVER_ERROR:", e?.stack || e);
+        return json(
+          { error: "Terjadi kesalahan server." },
+          500
+        );
+      }
+    }
+
+    return env.ASSETS.fetch(req);
   }
-  return env.ASSETS.fetch(req);
- }
 };
