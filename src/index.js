@@ -139,24 +139,13 @@ export default {
   async fetch(req, env) {
     const url = new URL(req.url);
 
-    // Paksa halaman utama membuka index.html
-    if (url.pathname === "/") {
-      url.pathname = "/index.html";
-      return env.ASSETS.fetch(
-        new Request(url, req)
-      );
-    }
-
-    // API tetap menggunakan backend yang sudah ada
+    // API diproses oleh Worker; halaman dan file statis dilayani oleh Assets.
     if (url.pathname.startsWith("/api/")) {
       try {
         return await handle(req, env);
       } catch (e) {
         console.error("NEXCHAT_SERVER_ERROR:", e?.stack || e);
-        return json(
-          { error: "Terjadi kesalahan server." },
-          500
-        );
+        return json({ error: "Terjadi kesalahan server." }, 500);
       }
     }
 
